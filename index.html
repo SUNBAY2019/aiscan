@@ -3,8 +3,58 @@
 <head>
 	<title></title>
 	<meta charset="utf-8">
+
+  <style type="text/css">
+    video{opacity:0;position: absolute;}
+  </style>
 </head>
 <body>
-THIS IS JUST A TEST!
+<video id="player" controls autoplay playsinline muted></video>
+<canvas id="snapshot" width="900" height="1600"></canvas>
+<div id="log"></div>
+<script>
+  const width = 900;
+  const height = 1600;
+
+  var player = document.getElementById('player'); 
+  var snapshotCanvas = document.getElementById('snapshot');
+
+
+  var handleSuccess = function(stream) {
+
+    // Attach the video stream to the video element and autoplay.
+    player.srcObject = stream;
+
+  };
+
+/*
+  captureButton.addEventListener('click', function() {
+    var context = snapshot.getContext('2d');
+    // Draw the video frame to the canvas.
+    context.drawImage(player, 0, 0, snapshotCanvas.width, 
+        snapshotCanvas.height);
+  });
+*/
+  function myLoop(){
+      log.textContent=player.videoWidth+"/"+player.videoHeight;
+
+        let context = snapshot.getContext('2d');
+    // Draw the video frame to the canvas.
+    context.drawImage(player, 0, 0, width  , 
+     height   );
+    
+    window.requestAnimationFrame(myLoop);
+  }
+
+
+window.requestAnimationFrame(myLoop);
+
+  navigator.mediaDevices.getUserMedia({
+    video: {facingMode: "environment", width: width, height: height },
+    audio: false 
+  })
+      .then(handleSuccess);
+</script>
+
 </body>
 </html>
